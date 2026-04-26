@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "589682458153",
+    "project_id": "olx-flutter-832dd",
+    "storage_bucket": "olx-flutter-832dd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589682458153:android:c618225babe29e3262a638",
+        "android_client_info": {
+          "package_name": "com.example.olx_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlazORbqECxRd5byBd6TqW4Ra-79ZcNQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
