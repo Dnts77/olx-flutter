@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:olx_flutter/models/user_model.dart';
+import 'package:olx_flutter/utils/constants.dart';
 import 'package:olx_flutter/widgets/customized_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _LoginScreenState extends State<LoginScreen> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -26,7 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
       email: user.email,
       password: user.senha
     ).then((firebaseUser){
-
+      if(mounted){
+        Constants.goToAds(context);
+      }
     });
   }
 
@@ -37,7 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
       email: user.email,
       password: user.senha
     ).then((firebaseUser){
-
+      if(mounted){
+        Constants.goToAds(context);
+      }
     });
   }
 
