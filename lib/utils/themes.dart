@@ -6,6 +6,7 @@ class AppTheme{
     appBarTheme: AppBarTheme(
       backgroundColor: Color(0xff9c27b0),
       shadowColor: Color(0xff7b1fa2),
+      foregroundColor: Colors.white,
       elevation: 4,
     )
   );
