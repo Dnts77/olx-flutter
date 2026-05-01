@@ -11,7 +11,11 @@ class Constants {
   }
   
   static Future<void> goToMyAds(BuildContext context){
-    return Navigator.pushReplacementNamed(context, "/my-ads");
+    return Navigator.pushNamed(context, "/my-ads");
+  }
+  
+  static Future<void> goToNewAd(BuildContext context){
+    return Navigator.pushNamed(context, "/new-ad");
   }
 
 }
