@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:olx_flutter/widgets/customized_button.dart';
 
 
 class NewAdScreen extends StatefulWidget {
@@ -24,10 +25,33 @@ class _NewAdScreenState extends State<NewAdScreen> {
           child: Form(
             key: _formKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 //Imagens
+                /*FormField(
+                  builder: (field) {
+                    throw '';
+                  },
+                ),*/
+
                 //Dropdown
+                Row(
+                  children: [
+                    Text("Estado"),
+                    Text("Categoria"),
+                  ],
+                ),
+                
                 //Caixas de texto
+                Text("Caixas de texto"),
+                CustomizedButton(
+                  text: "Cadastrar Anúncio",
+                  onPressed: () {
+                    if( _formKey.currentState!.validate() ){
+                      
+                    }
+                  },
+                ),
               ],
             ),
           ),
