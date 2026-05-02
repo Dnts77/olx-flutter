@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:olx_flutter/models/user_model.dart';
 import 'package:olx_flutter/utils/constants.dart';
+import 'package:olx_flutter/widgets/customized_button.dart';
 import 'package:olx_flutter/widgets/customized_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -101,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 CustomizedTextField(
                   controller: _passwordController,
                   hint: "Senha",
+                  obscure: true,
                   type: TextInputType.text,
                 ),
                 Row(
@@ -122,23 +124,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text("Cadastrar"),
                   ],
                 ),
-                ElevatedButton(
-                  style: ButtonStyle(
-                    foregroundColor: WidgetStatePropertyAll(Colors.white),
-                    backgroundColor: WidgetStatePropertyAll(Color(0xff9c27b0)),
-                    padding: WidgetStatePropertyAll(
-                      EdgeInsets.fromLTRB(32, 16, 32, 16)
-                    )
-                  ),
+                CustomizedButton(
+                  text: _buttonText,
                   onPressed: (){
                     _validateFields();
                   },
-                  child: Text(
-                    _buttonText,
-                    style: TextStyle(
-                      fontSize: 20
-                    ),
-                  ),
                 ),
                 Padding(
                   padding: EdgeInsetsGeometry.only(top: 20),
