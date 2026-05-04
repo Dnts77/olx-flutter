@@ -1,6 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:olx_flutter/widgets/customized_button.dart';
 
 
@@ -16,8 +16,15 @@ class _NewAdScreenState extends State<NewAdScreen> {
   final _formKey = GlobalKey<FormState>();
   final List<File> _imagesList = [];
 
-  void _selectGalleryImage(){
-
+  Future<void> _selectGalleryImage() async{
+    ImagePicker picker = ImagePicker();
+    XFile? selectedImage = await picker.pickImage(source: ImageSource.gallery);
+    
+    if(selectedImage != null){
+      setState(() {
+        _imagesList.add(File(selectedImage.path));
+      });
+    }
   }
 
   @override
@@ -81,7 +88,45 @@ class _NewAdScreenState extends State<NewAdScreen> {
                                 );
                               }
                               if(_imagesList.isNotEmpty){
-
+                                return Padding(
+                                  padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => Dialog(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Image.file(_imagesList[index]),
+                                              TextButton(
+                                                onPressed: (){
+                                                  setState(() {
+                                                    _imagesList.removeAt(index);
+                                                    Navigator.of(context).pop();
+                                                  });
+                                                },
+                                                child: Text(
+                                                  "Excluir",
+                                                  style: TextStyle(color: Colors.red),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      );
+                                    },
+                                    child: CircleAvatar(
+                                      radius: 50,
+                                      backgroundImage: FileImage(_imagesList[index]),
+                                      child: Container(
+                                        color: Color.fromRGBO(255, 255, 255, 0.4),
+                                        alignment: Alignment.center,
+                                        child: Icon(Icons.delete, color: Colors.red,),
+                                      ),
+                                    ),
+                                  ),
+                                );
                               }
                               return Container();
                             },
