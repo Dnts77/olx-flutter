@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:olx_flutter/widgets/customized_button.dart';
+import 'package:validadores/Validador.dart';
 
 
 class NewAdScreen extends StatefulWidget {
@@ -15,6 +17,11 @@ class _NewAdScreenState extends State<NewAdScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final List<File> _imagesList = [];
+  final List<DropdownMenuItem<String>> _statesDropList = [];
+  final List<DropdownMenuItem<String>> _categoriesDropList = [];
+
+  String? _selectedStateItem;
+  String? _selectedCategoryItem;
 
   Future<void> _selectGalleryImage() async{
     ImagePicker picker = ImagePicker();
@@ -25,6 +32,56 @@ class _NewAdScreenState extends State<NewAdScreen> {
         _imagesList.add(File(selectedImage.path));
       });
     }
+  }
+
+  void _loadDropdownItens(){
+    //Estados
+    for(var state in Estados.listaEstadosSigla){
+      _statesDropList.add(
+        DropdownMenuItem(
+          value: state,
+          child: Text(state),
+        )
+      );
+    }
+
+    //Categorias
+    _categoriesDropList.add(
+      DropdownMenuItem(
+        value: "auto",
+        child: Text("Automóvel"),
+      )
+    );
+    _categoriesDropList.add(
+      DropdownMenuItem(
+        value: "imovel",
+        child: Text("Imóvel"),
+      )
+    );
+    _categoriesDropList.add(
+      DropdownMenuItem(
+        value: "eletro",
+        child: Text("Eletrônicos"),
+      )
+    );
+    _categoriesDropList.add(
+      DropdownMenuItem(
+        value: "moda",
+        child: Text("Moda"),
+      )
+    );
+    _categoriesDropList.add(
+      DropdownMenuItem(
+        value: "esportes",
+        child: Text("Esportes"),
+      )
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDropdownItens();
   }
 
   @override
@@ -148,8 +205,50 @@ class _NewAdScreenState extends State<NewAdScreen> {
                 //Dropdown
                 Row(
                   children: [
-                    Text("Estado"),
-                    Text("Categoria"),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: DropdownButtonFormField(
+                          initialValue: _selectedStateItem,
+                          hint: Text("Estados"),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20
+                          ),
+                          items: _statesDropList,
+                          validator: (value){
+                            return Validador().add(Validar.OBRIGATORIO, msg: "Campo obrigatório").valido(value);
+                          },
+                          onChanged: (value){
+                            setState(() {
+                              _selectedStateItem = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: DropdownButtonFormField(
+                          initialValue: _selectedCategoryItem,
+                          hint: Text("Categorias"),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20
+                          ),
+                          items: _categoriesDropList,
+                          validator: (value){
+                            return Validador().add(Validar.OBRIGATORIO, msg: "Campo obrigatório").valido(value);
+                          },
+                          onChanged: (value){
+                            setState(() {
+                              _selectedCategoryItem = value;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 
