@@ -44,6 +44,10 @@ dependencies:
   #Imagens
   image_picker: ^1.2.2
 
+  #Extras
+  brasil_fields: ^1.19.0
+  validadores: ^1.0.9 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
