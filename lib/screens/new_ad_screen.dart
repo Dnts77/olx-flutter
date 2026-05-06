@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:olx_flutter/widgets/customized_button.dart';
+import 'package:olx_flutter/widgets/customized_text_field.dart';
 import 'package:validadores/Validador.dart';
 
 
@@ -253,7 +255,62 @@ class _NewAdScreenState extends State<NewAdScreen> {
                 ),
                 
                 //Caixas de texto
-                Text("Caixas de texto"),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 15, top: 15),
+                  child:  CustomizedTextField(
+                    hint: "Título",
+                    validator: (value) {
+                      return Validador().add(Validar.OBRIGATORIO, msg: "Campo obrigatório").valido(value);
+                    }, //TODO: ADICIONAR CONTROLLER
+                    controller: ,
+                  ),
+                ),
+                
+                Padding(
+                  padding: EdgeInsets.only(bottom: 15),
+                  child:  CustomizedTextField(
+                    hint: "Preço",
+                    type: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      RealInputFormatter(moeda: true)
+                    ],
+                    validator: (value) {
+                      return Validador().add(Validar.OBRIGATORIO, msg: "Campo obrigatório").valido(value);
+                    }, //TODO: ADICIONAR CONTROLLER
+                    controller: ,
+                  ),
+                ),
+                
+                Padding(
+                  padding: EdgeInsets.only(bottom: 15),
+                  child:  CustomizedTextField(
+                    hint: "Telefone",
+                    type: TextInputType.phone,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      TelefoneInputFormatter()
+                    ],
+                    validator: (value) {
+                      return Validador().add(Validar.OBRIGATORIO, msg: "Campo obrigatório").valido(value);
+                    }, //TODO: ADICIONAR CONTROLLER
+                    controller: ,
+                  ),
+                ),
+
+                Padding(
+                  padding: EdgeInsets.only(bottom: 15),
+                  child:  CustomizedTextField(
+                    hint: "Descrição (200 caracteres)",
+                    maxLines: null,
+                    validator: (value) {
+                      return Validador().add(Validar.OBRIGATORIO, msg: "Campo obrigatório").maxLength(200, msg: "Máximo de 200 caracteres").valido(value);
+                    }, //TODO: ADICIONAR CONTROLLER
+                    controller: ,
+                  ),
+                ),
+                
+                
                 CustomizedButton(
                   text: "Cadastrar Anúncio",
                   onPressed: () {
