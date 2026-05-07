@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:brasil_fields/brasil_fields.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:olx_flutter/models/advertisement.dart';
 import 'package:olx_flutter/widgets/customized_button.dart';
 import 'package:olx_flutter/widgets/customized_text_field.dart';
 import 'package:validadores/Validador.dart';
@@ -21,6 +23,8 @@ class _NewAdScreenState extends State<NewAdScreen> {
   final List<File> _imagesList = [];
   final List<DropdownMenuItem<String>> _statesDropList = [];
   final List<DropdownMenuItem<String>> _categoriesDropList = [];
+
+  late Advertisiment _advertisement;
 
   String? _selectedStateItem;
   String? _selectedCategoryItem;
@@ -80,10 +84,38 @@ class _NewAdScreenState extends State<NewAdScreen> {
     );
   }
 
+
+  //Método para salvar anúncio
+  Future<void> _saveAd() async{
+    //Upload imagens
+    await _uploadImages();
+  }
+
+  Future<void> _uploadImages() async{
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference root = storage.ref();
+
+    for(var image in _imagesList){
+      String imageName = DateTime.now().millisecondsSinceEpoch.toString();
+      
+      Reference file = root.child("meus_anuncios").child(_advertisement.id).child(imageName);
+      UploadTask uploadTask = file.putFile(image);
+      
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete((){});
+      
+      String url = await taskSnapshot.ref.getDownloadURL();
+      _advertisement.fotos.add(url);
+
+
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _loadDropdownItens();
+    _advertisement = Advertisiment();
+
   }
 
   @override
@@ -213,6 +245,9 @@ class _NewAdScreenState extends State<NewAdScreen> {
                         child: DropdownButtonFormField(
                           initialValue: _selectedStateItem,
                           hint: Text("Estados"),
+                          onSaved: (estado) {
+                            _advertisement.estado = estado!;
+                          },
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20
@@ -235,6 +270,9 @@ class _NewAdScreenState extends State<NewAdScreen> {
                         child: DropdownButtonFormField(
                           initialValue: _selectedCategoryItem,
                           hint: Text("Categorias"),
+                          onSaved: (categoria) {
+                            _advertisement.categoria = categoria!;
+                          },
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20
@@ -259,10 +297,12 @@ class _NewAdScreenState extends State<NewAdScreen> {
                   padding: EdgeInsets.only(bottom: 15, top: 15),
                   child:  CustomizedTextField(
                     hint: "Título",
+                    onSaved: (titulo){
+                      _advertisement.titulo = titulo!;
+                    },
                     validator: (value) {
                       return Validador().add(Validar.OBRIGATORIO, msg: "Campo obrigatório").valido(value);
-                    }, //TODO: ADICIONAR CONTROLLER
-                    controller: ,
+                    }, 
                   ),
                 ),
                 
@@ -270,6 +310,9 @@ class _NewAdScreenState extends State<NewAdScreen> {
                   padding: EdgeInsets.only(bottom: 15),
                   child:  CustomizedTextField(
                     hint: "Preço",
+                    onSaved: (preco) {
+                      _advertisement.preco = preco!;
+                    },
                     type: TextInputType.number,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
@@ -277,8 +320,7 @@ class _NewAdScreenState extends State<NewAdScreen> {
                     ],
                     validator: (value) {
                       return Validador().add(Validar.OBRIGATORIO, msg: "Campo obrigatório").valido(value);
-                    }, //TODO: ADICIONAR CONTROLLER
-                    controller: ,
+                    },   
                   ),
                 ),
                 
@@ -287,14 +329,16 @@ class _NewAdScreenState extends State<NewAdScreen> {
                   child:  CustomizedTextField(
                     hint: "Telefone",
                     type: TextInputType.phone,
+                    onSaved: (telefone) {
+                      _advertisement.telefone = telefone!;
+                    },
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
                       TelefoneInputFormatter()
                     ],
                     validator: (value) {
                       return Validador().add(Validar.OBRIGATORIO, msg: "Campo obrigatório").valido(value);
-                    }, //TODO: ADICIONAR CONTROLLER
-                    controller: ,
+                    }, 
                   ),
                 ),
 
@@ -302,11 +346,13 @@ class _NewAdScreenState extends State<NewAdScreen> {
                   padding: EdgeInsets.only(bottom: 15),
                   child:  CustomizedTextField(
                     hint: "Descrição (200 caracteres)",
+                    onSaved: (descricao) {
+                      _advertisement.descricao = descricao!;
+                    },
                     maxLines: null,
                     validator: (value) {
                       return Validador().add(Validar.OBRIGATORIO, msg: "Campo obrigatório").maxLength(200, msg: "Máximo de 200 caracteres").valido(value);
-                    }, //TODO: ADICIONAR CONTROLLER
-                    controller: ,
+                    }, 
                   ),
                 ),
                 
@@ -315,7 +361,10 @@ class _NewAdScreenState extends State<NewAdScreen> {
                   text: "Cadastrar Anúncio",
                   onPressed: () {
                     if( _formKey.currentState!.validate() ){
-                      
+                      //salvando campos
+                      _formKey.currentState!.save();
+                      //salvando anúncio
+                      _saveAd();
                     }
                   },
                 ),
