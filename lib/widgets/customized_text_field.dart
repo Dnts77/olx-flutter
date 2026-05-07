@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 
 
 class CustomizedTextField extends StatelessWidget {
-  const CustomizedTextField({super.key, required this.controller, required this.hint, this.obscure = false, this.autofocus = false, this.type = TextInputType.text, this.inputFormatters, this.maxLines, this.validator});
+  const CustomizedTextField({super.key, this.controller, required this.hint, this.obscure = false, this.autofocus = false, this.type = TextInputType.text, this.inputFormatters, this.maxLines, this.validator, this.onSaved});
 
 
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String hint;
   final bool obscure;
   final bool autofocus;
@@ -14,6 +14,7 @@ class CustomizedTextField extends StatelessWidget {
   final int? maxLines;
   final List<TextInputFormatter>? inputFormatters;
   final FormFieldValidator<String>? validator;
+  final FormFieldSetter<String>? onSaved;
 
 
   @override
@@ -23,6 +24,7 @@ class CustomizedTextField extends StatelessWidget {
       autofocus: autofocus,
       obscureText: obscure,
       keyboardType: type,
+      onSaved: onSaved,
       inputFormatters: inputFormatters,
       validator: validator,
       style: TextStyle(fontSize: 20),
