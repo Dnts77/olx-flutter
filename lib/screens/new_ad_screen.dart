@@ -1,10 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+import 'dart:developer';
 import 'dart:io';
 import 'package:brasil_fields/brasil_fields.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:olx_flutter/models/advertisement.dart';
+import 'package:olx_flutter/utils/constants.dart';
 import 'package:olx_flutter/widgets/customized_button.dart';
 import 'package:olx_flutter/widgets/customized_text_field.dart';
 import 'package:validadores/Validador.dart';
@@ -23,6 +27,7 @@ class _NewAdScreenState extends State<NewAdScreen> {
   final List<File> _imagesList = [];
   final List<DropdownMenuItem<String>> _statesDropList = [];
   final List<DropdownMenuItem<String>> _categoriesDropList = [];
+  late BuildContext _dialogContext;
 
   late Advertisiment _advertisement;
 
@@ -88,10 +93,48 @@ class _NewAdScreenState extends State<NewAdScreen> {
   //Método para salvar anúncio
   Future<void> _saveAd() async{
     //Upload imagens
-    await _uploadImages();
+    //await _uploadImages();
+    //Salva anúncio -> cloud
+    try{
+      _openDialog(_dialogContext);
+      FirebaseAuth auth = FirebaseAuth.instance;
+      User loggedUser = auth.currentUser!;
+      String loggedUserId = loggedUser.uid;
+    
+      FirebaseFirestore db = FirebaseFirestore.instance;
+      await db.collection("meus_anuncios").doc(loggedUserId).collection("anuncios").doc(_advertisement.id).set(_advertisement.toMap());
+      Navigator.pop(_dialogContext);
+      Constants.goToMyAds(context);
+     
+    }
+    catch(e){
+      log("Erro ao salvar $e");
+    }
   }
 
-  Future<void> _uploadImages() async{
+  void _openDialog(BuildContext context){
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context){
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(backgroundColor: Color(0xff9c27b0), color: Colors.white),
+              SizedBox(height: 20),
+              Text(
+                "Salvando Anúncio..."
+              )
+            ],
+          ),
+        );
+      }
+    );
+  }
+
+  //FIXME: Impossível executar método visto que o Storage agora é pago
+  /*Future<void> _uploadImages() async{
     FirebaseStorage storage = FirebaseStorage.instance;
     Reference root = storage.ref();
 
@@ -108,7 +151,7 @@ class _NewAdScreenState extends State<NewAdScreen> {
 
 
     }
-  }
+  }*/
 
   @override
   void initState() {
@@ -363,6 +406,8 @@ class _NewAdScreenState extends State<NewAdScreen> {
                     if( _formKey.currentState!.validate() ){
                       //salvando campos
                       _formKey.currentState!.save();
+                      //contexto dialog
+                      _dialogContext = context;
                       //salvando anúncio
                       _saveAd();
                     }
