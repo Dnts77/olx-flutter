@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:olx_flutter/models/advertisement.dart';
-import 'package:olx_flutter/utils/constants.dart';
 import 'package:olx_flutter/widgets/customized_button.dart';
 import 'package:olx_flutter/widgets/customized_text_field.dart';
 import 'package:validadores/Validador.dart';
@@ -104,7 +103,7 @@ class _NewAdScreenState extends State<NewAdScreen> {
       FirebaseFirestore db = FirebaseFirestore.instance;
       await db.collection("meus_anuncios").doc(loggedUserId).collection("anuncios").doc(_advertisement.id).set(_advertisement.toMap());
       Navigator.pop(_dialogContext);
-      Constants.goToMyAds(context);
+      Navigator.pop(context);
      
     }
     catch(e){
