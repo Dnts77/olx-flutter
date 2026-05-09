@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olx_flutter/utils/constants.dart';
+import 'package:olx_flutter/widgets/ad_item.dart';
 
 
 class MyAdsScreen extends StatefulWidget {
@@ -22,7 +23,12 @@ class _MyAdsScreenState extends State<MyAdsScreen> {
         },
         child: Icon(Icons.add),
       ),
-      body: Container(),
+      body: ListView.builder(
+        itemCount: 4,
+        itemBuilder:(context, index) {
+          return AdItem();
+        },
+      ),
     );
   }
 }
