@@ -10,12 +10,26 @@ class Advertisiment {
   late String descricao;
   late List<String> fotos;
 
-  Advertisiment(){
+
+  Advertisiment();
+
+  Advertisiment.generateId(){
     FirebaseFirestore db = FirebaseFirestore.instance;
     CollectionReference ads = db.collection("meus_anuncios");
     id = ads.doc().id;
 
     fotos = [];
+  }
+
+  Advertisiment.fromDocumentSnapshot(DocumentSnapshot documentSnapshot){
+    id = documentSnapshot.id;
+    estado = documentSnapshot["estado"];
+    categoria = documentSnapshot["categoria"];
+    titulo = documentSnapshot["titulo"];
+    preco = documentSnapshot["preco"];
+    telefone = documentSnapshot["telefone"];
+    descricao = documentSnapshot["descricao"];
+    fotos = List<String>.from(documentSnapshot["fotos"]);
   }
 
   Map<String, dynamic> toMap(){
