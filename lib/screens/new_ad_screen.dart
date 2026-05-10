@@ -156,7 +156,7 @@ class _NewAdScreenState extends State<NewAdScreen> {
   void initState() {
     super.initState();
     _loadDropdownItens();
-    _advertisement = Advertisiment();
+    _advertisement = Advertisiment.generateId();
 
   }
 
