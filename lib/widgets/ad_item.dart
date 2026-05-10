@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:olx_flutter/models/advertisement.dart';
 
 class AdItem extends StatelessWidget {
-  const AdItem({super.key});
+  const AdItem({required this.advertisiment, this.onTapItem, this.onPressedDelete, super.key});
+
+  final Advertisiment advertisiment;
+  final VoidCallback? onTapItem;
+  final VoidCallback? onPressedDelete;
+
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        
-      },
+      onTap: onTapItem,
       child: Card(
         child: Padding(
           padding: EdgeInsets.all(12),
@@ -18,7 +22,17 @@ class AdItem extends StatelessWidget {
               SizedBox(
                 width: 120,
                 height: 120,
-                child: Container(color: Colors.orange),
+                child: Container(
+                  color: Colors.grey[500], 
+                  child: Center(
+                    child: Text(
+                      "Imagem", 
+                      style: TextStyle(
+                        color: Colors.white
+                      ),
+                    ),
+                  ),
+                ) //Image.network(advertisiment.fotos[0], fit: BoxFit.cover),
               ),
               //Título e preço
               Expanded(
@@ -29,23 +43,21 @@ class AdItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Console Nintendo 64",
+                        advertisiment.titulo,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold
                         ),
                       ),
-                      Text("R\$ 1.200,80"),
+                      Text("R\$ ${advertisiment.preco}"),
                     ],
                   ),
                 ),
               ),
-              Expanded(
+              if(onPressedDelete != null) Expanded(
                 flex: 1,
                 child: TextButton(
-                  onPressed: () {
-                    
-                  },
+                  onPressed: onPressedDelete,
                   style: ButtonStyle(
                     padding: WidgetStatePropertyAll(
                       EdgeInsets.all(10)
