@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:olx_flutter/models/advertisement.dart';
+import 'package:olx_flutter/utils/configs.dart';
 import 'package:olx_flutter/widgets/customized_button.dart';
 import 'package:olx_flutter/widgets/customized_text_field.dart';
 import 'package:validadores/Validador.dart';
@@ -24,8 +25,8 @@ class _NewAdScreenState extends State<NewAdScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final List<File> _imagesList = [];
-  final List<DropdownMenuItem<String>> _statesDropList = [];
-  final List<DropdownMenuItem<String>> _categoriesDropList = [];
+  List<DropdownMenuItem<String>> _statesDropList = [];
+  List<DropdownMenuItem<String>> _categoriesDropList = [];
   late BuildContext _dialogContext;
 
   late Advertisiment _advertisement;
@@ -46,46 +47,10 @@ class _NewAdScreenState extends State<NewAdScreen> {
 
   void _loadDropdownItens(){
     //Estados
-    for(var state in Estados.listaEstadosSigla){
-      _statesDropList.add(
-        DropdownMenuItem(
-          value: state,
-          child: Text(state),
-        )
-      );
-    }
+    _statesDropList = Configs.getStates();
 
     //Categorias
-    _categoriesDropList.add(
-      DropdownMenuItem(
-        value: "auto",
-        child: Text("Automóvel"),
-      )
-    );
-    _categoriesDropList.add(
-      DropdownMenuItem(
-        value: "imovel",
-        child: Text("Imóvel"),
-      )
-    );
-    _categoriesDropList.add(
-      DropdownMenuItem(
-        value: "eletro",
-        child: Text("Eletrônicos"),
-      )
-    );
-    _categoriesDropList.add(
-      DropdownMenuItem(
-        value: "moda",
-        child: Text("Moda"),
-      )
-    );
-    _categoriesDropList.add(
-      DropdownMenuItem(
-        value: "esportes",
-        child: Text("Esportes"),
-      )
-    );
+    _categoriesDropList = Configs.getCategories();
   }
 
 
@@ -102,8 +67,13 @@ class _NewAdScreenState extends State<NewAdScreen> {
     
       FirebaseFirestore db = FirebaseFirestore.instance;
       await db.collection("meus_anuncios").doc(loggedUserId).collection("anuncios").doc(_advertisement.id).set(_advertisement.toMap());
-      Navigator.pop(_dialogContext);
-      Navigator.pop(context);
+      
+      //salva anúncio público
+      db.collection("anuncios").doc(_advertisement.id).set(_advertisement.toMap()).then((_){
+        Navigator.pop(_dialogContext);
+        Navigator.pop(context);
+      });
+      
      
     }
     catch(e){
