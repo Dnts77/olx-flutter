@@ -49,7 +49,7 @@ class AdItem extends StatelessWidget {
                           fontWeight: FontWeight.bold
                         ),
                       ),
-                      Text("R\$ ${advertisiment.preco}"),
+                      Text(advertisiment.preco),
                     ],
                   ),
                 ),
