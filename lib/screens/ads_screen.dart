@@ -1,6 +1,12 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:olx_flutter/models/advertisement.dart';
+import 'package:olx_flutter/utils/configs.dart';
 import 'package:olx_flutter/utils/constants.dart';
+import 'package:olx_flutter/widgets/ad_item.dart';
 
 class AdsScreen extends StatefulWidget {
   const AdsScreen({super.key});
@@ -12,6 +18,13 @@ class AdsScreen extends StatefulWidget {
 class _AdsScreenState extends State<AdsScreen> {
 
   List<String> _menuItens = [];
+  String? _stateSelectedItem;
+  String? _categorySelectedItem;
+
+  final _streamController = StreamController<QuerySnapshot>.broadcast();
+
+  List<DropdownMenuItem<String>> _statesDropList = [];
+  List<DropdownMenuItem<String>> _categoriesDropList = [];
 
 
   //Escolha dos itens
@@ -51,10 +64,50 @@ class _AdsScreenState extends State<AdsScreen> {
     }
   }
 
+  void _loadDropdownItens(){
+    //Estados
+    _statesDropList = Configs.getStates();
+
+    //Categorias
+    _categoriesDropList = Configs.getCategories();
+  }
+
+  Future<Stream<QuerySnapshot>> _addAdvertisementListener() async{
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    Stream<QuerySnapshot> stream = db.collection("anuncios").snapshots();
+
+    stream.listen((dados){
+      _streamController.add(dados);
+    });
+    return stream;
+  }
+  
+  Future<Stream<QuerySnapshot>> _filterAds() async{
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    Query query = db.collection("anuncios");
+    
+
+    if(_stateSelectedItem != null){
+      query.where("estado", isEqualTo: _stateSelectedItem);
+    }
+    if(_categorySelectedItem != null){
+      query.where("categoria", isEqualTo: _categorySelectedItem);
+    }
+    
+    Stream<QuerySnapshot> stream = query.snapshots();
+
+    stream.listen((dados){
+      _streamController.add(dados);
+    });
+    return stream;
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadDropdownItens();
     _checkLoggedUser();
+    _addAdvertisementListener();
   }
 
 
@@ -79,7 +132,102 @@ class _AdsScreenState extends State<AdsScreen> {
         ],
       ),
       body: Container(
-        child: Text("Anúncios"),
+        padding: EdgeInsets.all(2),
+        child: Column(
+          children: [
+            //Filtros
+            Row(
+              children: [
+                Expanded(
+                  child: DropdownButtonHideUnderline(
+                    child: Center(
+                      child: DropdownButton(
+                        items: _statesDropList,
+                        iconEnabledColor: Color(0xff9c27b0),
+                        value: _stateSelectedItem,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.black
+                        ),
+                        onChanged: (state) {
+                          setState(() {
+                            _stateSelectedItem = state;
+                            _filterAds();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  color: Colors.grey[200],
+                  width: 2,
+                  height: 60,
+                ),
+                Expanded(
+                  child: DropdownButtonHideUnderline(
+                    child: Center(
+                      child: DropdownButton(
+                        items: _categoriesDropList,
+                        iconEnabledColor: Color(0xff9c27b0),
+                        value: _categorySelectedItem,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.black
+                        ),
+                        onChanged: (category) {
+                          setState(() {
+                            _categorySelectedItem = category;
+                            _filterAds();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            StreamBuilder(
+              stream: _streamController.stream,
+              builder: (context, snapshot) {
+                switch(snapshot.connectionState){
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    QuerySnapshot? querySnapshot = snapshot.data;
+                    if(querySnapshot == null){
+                      return Container();
+                    }
+                    if(querySnapshot.docs.isEmpty){
+                      return Container(
+                        padding: EdgeInsets.all(25),
+                        child: Text("Nenhum anúncio", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                      );
+                    }
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: querySnapshot.docs.length,
+                      itemBuilder: (context, index) {
+                        List<DocumentSnapshot> ads = querySnapshot.docs.toList();
+                        DocumentSnapshot documentSnapshot = ads[index];
+                        Advertisiment advertisiment = Advertisiment.fromDocumentSnapshot(documentSnapshot);
+
+                        return AdItem(
+                          advertisiment: advertisiment,
+                          onTapItem: () {
+                            
+                          },
+                        );
+                      },
+                    ),
+                  );
+                }
+                
+              },
+            )
+          ],
+        ),
       ),
       
     );
