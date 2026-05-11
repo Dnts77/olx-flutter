@@ -40,7 +40,9 @@ class _MyAdsScreenState extends State<MyAdsScreen> {
 
   Future<void> _removeAdd(String adId) async{
     FirebaseFirestore db = FirebaseFirestore.instance;
-    db.collection("meus_anuncios").doc(_loggedUserId).collection("anuncios").doc(adId).delete();
+    db.collection("meus_anuncios").doc(_loggedUserId).collection("anuncios").doc(adId).delete().then((_){
+      db.collection("anuncios").doc(adId).delete();
+    });
   }
 
   @override
