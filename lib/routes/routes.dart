@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:olx_flutter/models/advertisement.dart';
+import 'package:olx_flutter/screens/ads_details.dart';
 import 'package:olx_flutter/screens/ads_screen.dart';
 import 'package:olx_flutter/screens/login_screen.dart';
 import 'package:olx_flutter/screens/my_ads_screen.dart';
@@ -24,6 +26,10 @@ class Routes {
       case "/new-ad":
         return MaterialPageRoute(
           builder: (_) => NewAdScreen()
+        );
+      case "/ad-detail":
+        return MaterialPageRoute(
+          builder: (_) => AdsDetails(advertisiment: args as Advertisiment?)
         );
       default: 
         return _routeError();
