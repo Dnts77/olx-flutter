@@ -44,9 +44,12 @@ dependencies:
   #Imagens
   image_picker: ^1.2.2
 
-  #Extras
+  #Validação & Formatação
   brasil_fields: ^1.19.0
   validadores: ^1.0.9 
+
+  #Carousel
+  carousel_slider: ^5.1.2 
 
 dev_dependencies:
   flutter_test:
