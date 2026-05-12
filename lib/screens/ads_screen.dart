@@ -113,6 +113,16 @@ class _AdsScreenState extends State<AdsScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    var loadingData = Center(
+      child: Column(
+        children: [
+          Text("Carregando anúncios..."),
+          CircularProgressIndicator()
+        ],
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text("OLX"),
@@ -193,6 +203,7 @@ class _AdsScreenState extends State<AdsScreen> {
                 switch(snapshot.connectionState){
                   case ConnectionState.none:
                   case ConnectionState.waiting:
+                    return loadingData;
                   case ConnectionState.active:
                   case ConnectionState.done:
                     QuerySnapshot? querySnapshot = snapshot.data;
@@ -216,7 +227,7 @@ class _AdsScreenState extends State<AdsScreen> {
                         return AdItem(
                           advertisiment: advertisiment,
                           onTapItem: () {
-                            
+                            Constants.goAdsDetails(context, advertisiment);
                           },
                         );
                       },
