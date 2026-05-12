@@ -17,5 +17,8 @@ class Constants {
   static Future<void> goToNewAd(BuildContext context){
     return Navigator.pushNamed(context, "/new-ad");
   }
+  static Future<void> goAdsDetails(BuildContext context, Object? arguments){
+    return Navigator.pushNamed(context, "/ad-detail", arguments: arguments);
+  }
 
 }
