@@ -95,7 +95,7 @@ class _MyAdsScreenState extends State<MyAdsScreen> {
                 itemBuilder: (context, index) {
                   List<DocumentSnapshot> ads = querySnapshot.docs.toList();
                   DocumentSnapshot documentSnapshot = ads[index];
-                  Advertisiment advertisiment = Advertisiment.fromDocumentSnapshot(documentSnapshot);
+                  Advertisement advertisiment = Advertisement.fromDocumentSnapshot(documentSnapshot);
                   return AdItem(
                     advertisiment: advertisiment,
                     onPressedDelete: () {

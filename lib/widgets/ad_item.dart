@@ -4,7 +4,7 @@ import 'package:olx_flutter/models/advertisement.dart';
 class AdItem extends StatelessWidget {
   const AdItem({required this.advertisiment, this.onTapItem, this.onPressedDelete, super.key});
 
-  final Advertisiment advertisiment;
+  final Advertisement advertisiment;
   final VoidCallback? onTapItem;
   final VoidCallback? onPressedDelete;
 

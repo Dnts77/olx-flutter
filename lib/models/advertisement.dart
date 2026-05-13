@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Advertisiment {
+class Advertisement {
   late String id;
   late String estado;
   late String categoria;
@@ -11,9 +11,9 @@ class Advertisiment {
   late List<String> fotos;
 
 
-  Advertisiment();
+  Advertisement();
 
-  Advertisiment.generateId(){
+  Advertisement.generateId(){
     FirebaseFirestore db = FirebaseFirestore.instance;
     CollectionReference ads = db.collection("meus_anuncios");
     id = ads.doc().id;
@@ -21,7 +21,7 @@ class Advertisiment {
     fotos = [];
   }
 
-  Advertisiment.fromDocumentSnapshot(DocumentSnapshot documentSnapshot){
+  Advertisement.fromDocumentSnapshot(DocumentSnapshot documentSnapshot){
     id = documentSnapshot.id;
     estado = documentSnapshot["estado"];
     categoria = documentSnapshot["categoria"];

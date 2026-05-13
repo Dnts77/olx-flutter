@@ -29,7 +29,7 @@ class _NewAdScreenState extends State<NewAdScreen> {
   List<DropdownMenuItem<String>> _categoriesDropList = [];
   late BuildContext _dialogContext;
 
-  late Advertisiment _advertisement;
+  late Advertisement _advertisement;
 
   String? _selectedStateItem;
   String? _selectedCategoryItem;
@@ -126,7 +126,7 @@ class _NewAdScreenState extends State<NewAdScreen> {
   void initState() {
     super.initState();
     _loadDropdownItens();
-    _advertisement = Advertisiment.generateId();
+    _advertisement = Advertisement.generateId();
 
   }
 

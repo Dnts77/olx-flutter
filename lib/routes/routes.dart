@@ -29,7 +29,7 @@ class Routes {
         );
       case "/ad-detail":
         return MaterialPageRoute(
-          builder: (_) => AdsDetails(advertisiment: args as Advertisiment?)
+          builder: (_) => AdsDetails(advertisement: args as Advertisement?)
         );
       default: 
         return _routeError();
